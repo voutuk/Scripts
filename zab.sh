@@ -35,7 +35,7 @@ EOF
 
 # Load Zabbix database structure
 
-echo "Password: $pass\nThe download will complete at 37.0MiB"
+echo -e "Password: $pass\nThe download will complete at 37.0MiB"
 zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | pv | mysql --default-character-set=utf8mb4 -uuser_$rand -p zabbix_$rand
 
 # Revert the log_bin_trust_function_creators property

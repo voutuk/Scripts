@@ -46,6 +46,9 @@ EOF
 
 # Add the password to the Zabbix server configuration file
 echo "DBPassword=$pass" | sudo tee -a /etc/zabbix/zabbix_server.conf
+sudo sed -i "s/^DBName=.*/DBName=${db}/" /etc/zabbix/zabbix_server.conf
+sudo sed -i "s/^DBUser=.*/DBUser=${dbuser}/" /etc/zabbix/zabbix_server.conf
+
 
 # Restart Zabbix server, agent, and Apache
 sudo systemctl restart zabbix-server zabbix-agent apache2

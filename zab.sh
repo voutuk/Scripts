@@ -6,54 +6,47 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# Data generation
+# Generates a random password, stores it in "db.pass" and retrieves the version of the Linux distribution.
 pass=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;)
-rand=$RANDOM
+echo "$pass" > db.pass
 ub=$(lsb_release -rs)
 
-# Download Zabbix repository package
+# Downloads and installs Zabbix repository for the specified Ubuntu version.
 wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu${ub}_all.deb
-
-# Install Zabbix repository package
 sudo dpkg -i zabbix-release_6.0-4+ubuntu${ub}_all.deb
 rm zabbix-release_6.0-4+ubuntu${ub}_all.deb
 
-# Update the package list
 sudo apt update
-
-# Install Zabbix packages, MySQL, and dependencies
 sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server pv -y
 
-# Create a database and user for Zabbix in MySQL
-echo "Enter system password"
-sudo mysql -uroot -p <<EOF
-create database zabbix_$rand character set utf8mb4 collate utf8mb4_bin;
-create user user_$rand@localhost identified by '$pass';
-grant all privileges on zabbix_$rand.* to user_$rand@localhost;
+# If a lock file "/tmp/db.lock" exists, it reads the password from "db.pass," otherwise it creates a MySQL database, user, and permissions, and creates the lock file.
+if [ -e "/tmp/db.lock" ]; then
+    pass=$(cat "db.pass")
+else
+    echo -e "\033[44m\033[30m Enter system password \033[0m"
+    sudo mysql -uroot -p <<EOF
+create database zabbix character set utf8mb4 collate utf8mb4_bin;
+create user zabbix@localhost identified by '$pass';
+grant all privileges on zabbix.* to zabbix@localhost;
 set global log_bin_trust_function_creators = 1;
 EOF
+    touch "/tmp/db.lock"
+fi
 
-# Load Zabbix database structure
+# Decompresses and streams Zabbix SQL script into MySQL with UTF-8 encoding using pv for progress visualization.
+echo -e "\033[44m\033[30m Password: $pass \033[0m\n  \033[44m\033[30m The download will complete at 37.8MiB \033[0m"
+zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | pv | mysql --default-character-set=utf8mb4 -uzabbix -p zabbix
 
-echo -e "Password: $pass\nThe download will complete at 37.0MiB"
-zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | pv | mysql --default-character-set=utf8mb4 -uuser_$rand -p zabbix_$rand
-
-# Revert the log_bin_trust_function_creators property
-echo "Enter system password"
+# Disables the option "log_bin_trust_function_creators" in MySQL by running a command with root privileges.
+echo -e "\033[44m\033[30m Enter system password \033[0m"
 sudo mysql -uroot -p <<EOF
 set global log_bin_trust_function_creators = 0;
 EOF
 
-# Add the password to the Zabbix server configuration file
+# Appends the DB password variable to the Zabbix Server configuration file using the tee command with elevated privileges.
 echo "DBPassword=$pass" | sudo tee -a /etc/zabbix/zabbix_server.conf
-sudo sed -i "s/^DBName=.*/DBName=${db}/" /etc/zabbix/zabbix_server.conf
-sudo sed -i "s/^DBUser=.*/DBUser=${dbuser}/" /etc/zabbix/zabbix_server.conf
 
-
-# Restart Zabbix server, agent, and Apache
 sudo systemctl restart zabbix-server zabbix-agent apache2
-
-# Enable automatic startup for Zabbix server, agent, and Apache
 sudo systemctl enable zabbix-server zabbix-agent apache2
 
-echo -e "\n=====================\nhttp://host/zabbix\nDB_NAME: zabbix_$rand\nDB_USER: user_$rand\nDB_PASSWORD: $pass\nAdmin/zabbix\n=====================\n"
+echo -e "\n=====================\nhttp://host/zabbix\nDB_NAME: zabbix\nDB_USER: zabbix\nDB_PASSWORD: $pass\nAdmin/zabbix\n=====================\n"

@@ -27,8 +27,6 @@ GRANT ALL PRIVILEGES ON wordpress_$rand.* TO 'wp_$rand'@'localhost';
 FLUSH PRIVILEGES;
 EOF
 
-echo -e "\033[44mЯкщо файл не завантажується спробуйте увімкнути VPN\nIf the file does not download, try to turn on the VPN\033[0m"
-
 # Download and extract WordPress files
 mkdir /tmp/wp_$rand && cd /tmp/wp_$rand
 curl -O https://wordpress.org/latest.tar.gz

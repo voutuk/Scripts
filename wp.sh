@@ -1,53 +1,85 @@
 #!/bin/bash
 
+error_handler() {
+    clear
+    echo -e "\n +-----------------------------------------------+"
+    echo -e " |                                               |"
+    echo -e " |   /\_/\     Script                            |"
+    echo -e " |  ( o-o )    execution                         |"
+    echo -e " |   > ~ <     error                             |"
+    echo -e " |                                               |"
+    echo -e " +-----------------------------------------------+"
+    exit 1
+}
 
-# Set up error handling and exit on failure
-set -o errexit
-set -o nounset
-set -o pipefail
+trap 'error_handler' ERR
 
-# Random data generation
 pass=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;)
-rand=$RANDOM
+rand=$((10000 + RANDOM % 90000))
 
-# Update package list
-sudo apt update
+clear
+echo -e "\n +-----------------------------------------------+"
+echo -e " |           Installation (Wordpress LAMP):      |"
+echo -e " |   /\_/\    - Install packages                 |"
+echo -e " |  ( o-o )   - Configure mysql                  |"
+echo -e " |   > ~ <    - Download wordpress               |"
+echo -e " |           Installation is in progress         |"
+echo -e " +-----------------------------------------------+"
 
-# Install Apache2 MySQL PHP and required modules
-sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql git -y
+sudo apt update > /dev/null 2>&1
+sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql git -y > /dev/null 2>&1
+sudo systemctl restart apache2.service > /dev/null 2>&1
 
-# Restart Apache2 service
-sudo systemctl restart apache2.service
+clear
+echo -e "\n +-----------------------------------------------+"
+echo -e " |           Installation (Wordpress LAMP):      |"
+echo -e " |   /\_/\    + Install packages                 |"
+echo -e " |  ( o-o )   - Configure mysql                  |"
+echo -e " |   > ~ <    - Download wordpress               |"
+echo -e " |           Installation is in progress         |"
+echo -e " +-----------------------------------------------+"
 
-# Create MySQL database for WordPress
-sudo mysql -u root <<EOF
+sudo mysql -u root <<EOF > /dev/null
 CREATE DATABASE wordpress_$rand;
 CREATE USER 'wp_$rand'@'localhost' IDENTIFIED BY '$pass';
 GRANT ALL PRIVILEGES ON wordpress_$rand.* TO 'wp_$rand'@'localhost';
 FLUSH PRIVILEGES;
 EOF
 
-# Download and extract WordPress files
+clear
+echo -e "\n +-----------------------------------------------+"
+echo -e " |           Installation (Wordpress LAMP):      |"
+echo -e " |   /\_/\    + Install packages                 |"
+echo -e " |  ( o-o )   + Configure mysql                  |"
+echo -e " |   > ~ <    - Download wordpress               |"
+echo -e " |           Installation is in progress         |"
+echo -e " +-----------------------------------------------+"
+
 mkdir /tmp/wp_$rand && cd /tmp/wp_$rand
-curl -O https://wordpress.org/latest.tar.gz
-tar xzvf latest.tar.gz
-
-# Copy WordPress files to Apache2 web root directory
-sudo cp -r /tmp/wp_$rand/wordpress/* /var/www/html/
-rm -r /tmp/wp_$rand
-
-# Set permissions for WordPress files and directories
-sudo chown -R www-data:www-data /var/www/html/
-sudo chmod -R 755 /var/www/html/
-
-# Create WordPress configuration file from sample file and set database details
+curl -O https://wordpress.org/latest.tar.gz > /dev/null 2>&1
+tar xzvf latest.tar.gz > /dev/null 2>&1
+sudo cp -r /tmp/wp_$rand/wordpress/* /var/www/html/ > /dev/null 2>&1
+rm -r /tmp/wp_$rand > /dev/null 2>&1
+sudo chown -R www-data:www-data /var/www/html/ > /dev/null 2>&1
+sudo chmod -R 755 /var/www/html/ > /dev/null 2>&1
 cd /var/www/html/
-sudo mv wp-config-sample.php wp-config.php
-sudo sed -i "/DB_NAME/s/'[^']*'/'wordpress_$rand'/2" wp-config.php
-sudo sed -i "/DB_USER/s/'[^']*'/'wp_$rand'/2" wp-config.php
-sudo sed -i "/DB_PASSWORD/s/'[^']*'/'$pass'/2" wp-config.php
-sudo rm index.html
+sudo mv wp-config-sample.php wp-config.php > /dev/null 2>&1
+sudo sed -i "/DB_NAME/s/'[^']*'/'wordpress_$rand'/2" wp-config.php > /dev/null 2>&1
+sudo sed -i "/DB_USER/s/'[^']*'/'wp_$rand'/2" wp-config.php > /dev/null 2>&1
+sudo sed -i "/DB_PASSWORD/s/'[^']*'/'$pass'/2" wp-config.php > /dev/null 2>&1
+sudo rm index.html > /dev/null 2>&1
 
+if [ -d "$HOME" ]; then
+    echo "$pass" > "$HOME/wp_pass.key" || error_handler
+else
+    error_handler
+fi
 
-echo -e "\n=====================\nDB_NAME: wordpress_$rand\nDB_USER: wp_$rand\nDB_PASSWORD: $pass\n=====================\n"
-
+clear
+echo -e "\n +-----------------------------------------------+"
+echo -e " |           Installation (Wordpress LAMP):      |"
+echo -e " |   /\_/\    DB_NAME: wordpress_$rand           |"
+echo -e " |  ( o-o )   DB_USER: wp_$rand                  |"
+echo -e " |   > ~ <    DB_PASSWORD: wp_pass.key           |"
+echo -e " |           Installation is successful          |"
+echo -e " +-----------------------------------------------+"

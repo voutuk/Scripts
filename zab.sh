@@ -12,9 +12,9 @@ echo "$pass" > db.pass
 ub=$(lsb_release -rs)
 
 # Downloads and installs Zabbix repository for the specified Ubuntu version.
-wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu${ub}_all.deb
-sudo dpkg -i zabbix-release_6.0-4+ubuntu${ub}_all.deb
-rm zabbix-release_6.0-4+ubuntu${ub}_all.deb
+wget https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu${ub}_all.deb
+sudo dpkg -i zabbix-release_6.4-1+ubuntu${ub}_all.deb
+rm zabbix-release_6.4-1+ubuntu${ub}_all.deb
 
 sudo apt update
 sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server pv -y

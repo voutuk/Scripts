@@ -6,4 +6,5 @@ services:
     container_name: nginx_test
     ports:
       - "80:80"
+      - "10050:10050"
     restart: always

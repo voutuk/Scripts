@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Set up error handling and exit on failure
 set -o errexit
 set -o nounset

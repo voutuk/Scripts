@@ -41,7 +41,8 @@ sudo mysql -uroot -p <<EOF
 set global log_bin_trust_function_creators = 0;
 EOF
 
-echo "DBPassword=$pass" >> /etc/zabbix/zabbix_server.conf
+echo -e "\e[42m\e[30m Writing the password to the configuration file. \e[0m"
+echo "DBPassword=$pass" | sudo tee -a /etc/zabbix/zabbix_server.conf > /dev/null
 
 echo -e "\e[42m\e[30m Starting services. \e[0m"
 sudo systemctl restart zabbix-server zabbix-agent apache2

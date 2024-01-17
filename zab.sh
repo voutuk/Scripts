@@ -38,7 +38,7 @@ echo -e "\e[42m\e[30m ✔ Zabbix database. \e[0m"
 
 echo -e "\e[30;44m ❍ Decompressing a sql file. \e[0m"
 zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | pv | mysql --default-character-set=utf8mb4 -uzabbix -p"$pass" zabbix
-echo -e "\e[42m\e[30m ✔ Decompressing a sql file. \e[0m"
+echo -e "\e[42m\e[30m ✔ Sql file. \e[0m"
 
 sudo mysql -uroot <<EOF
 set global log_bin_trust_function_creators = 0;

@@ -18,11 +18,11 @@ sudo apt update
 sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server pv -y
 echo -e "\e[42m\e[30m ✔ Zabbix components. \e[0m"
 
-if mysql -uroot -e "use zabbix" > /dev/null 2>&1; then
+if sudo mysql -uroot -e "use zabbix" > /dev/null 2>&1; then
     echo -e "\e[48;5;250m\e[30m ✎ Deleting an existing Zabbix database. \e[0m"
     sudo mysql -uroot -e "DROP DATABASE IF EXISTS zabbix;"
 fi
-if  mysql -uroot -e "use mysql; select user from user where user='zabbix'" | grep zabbix > /dev/null 2>&1; then
+if sudo mysql -uroot -e "use mysql; select user from user where user='zabbix'" | grep zabbix > /dev/null 2>&1; then
     echo -e "\e[48;5;250m\e[30m ✎ Deleting an existing Zabbix user. \e[0m"
     sudo mysql -uroot -e "DROP USER IF EXISTS 'zabbix'@'localhost';"
 fi
@@ -40,7 +40,7 @@ echo -e "\e[30;44m ❍ Decompressing a sql file. \e[0m"
 zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | pv | mysql --default-character-set=utf8mb4 -uzabbix -p"$pass" zabbix
 echo -e "\e[42m\e[30m ✔ Decompressing a sql file. \e[0m"
 
-mysql -uroot <<EOF
+sudo mysql -uroot <<EOF
 set global log_bin_trust_function_creators = 0;
 EOF
 

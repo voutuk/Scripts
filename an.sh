@@ -9,7 +9,7 @@ trap 'handle_error' ERR
 sudo apt update
 sudo apt install software-properties-common -y
 sudo add-apt-repository --yes --update ppa:ansible/ansible
-echo -e "\e[30;44m ❍ Installing Ansible. \e[0m"
+echo -e "\e[48;5;183m\e[30m ✶ Installing Ansible. \e[0m"
 sudo apt install ansible -y
 
 echo -e "\e[42m\e[30m ✔ Ansible is successfully installed. \e[0m"

@@ -11,11 +11,9 @@ database_password=$(openssl rand -base64 20)
 echo -e "\e[30;44m ❍ Installing WordPress components. \e[0m"
 sudo apt update
 sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql git -y
-echo -e "\e[42m\e[30m ✔ WordPress components. \e[0m"
 
 echo -e "\e[30;44m ❍ Restart service. \e[0m"
 sudo systemctl restart apache2.service
-
 
 if sudo mysql -uroot -e "use wordpress" > /dev/null 2>&1; then
     echo -e "\e[48;5;250m\e[30m ✎ Deleting an existing WordPress database. \e[0m"
@@ -32,18 +30,15 @@ CREATE USER 'wp_user'@'localhost' IDENTIFIED BY '$database_password';
 GRANT ALL PRIVILEGES ON wordpress.* TO 'wp_user'@'localhost';
 FLUSH PRIVILEGES;
 EOF
-echo -e "\e[42m\e[30m ✔ WordPress database. \e[0m"
 
 echo -e "\e[30;44m ❍ Downloading WordPress file. \e[0m"
 mkdir /tmp/wp_tmp && cd /tmp/wp_tmp
 curl -O https://wordpress.org/latest.tar.gz
 tar xzvf latest.tar.gz
-echo -e "\e[42m\e[30m ✔ WordPress file. \e[0m"
 
 echo -e "\e[30;44m ❍ Copy WordPress files. \e[0m"
 sudo rsync -av /tmp/wp_tmp/wordpress/ /var/www/html/wordpress/
 rm -r /tmp/wp_tmp
-echo -e "\e[42m\e[30m ✔ WordPress file. \e[0m"
 
 sudo chown -R www-data:www-data /var/www/html/wordpress/
 sudo chmod -R 755 /var/www/html/wordpress/
@@ -55,4 +50,4 @@ sudo perl -pi -e "s%database_name_here%wordpress%g" /var/www/html/wordpress/wp-c
 sudo perl -pi -e "s%username_here%wp_user%g" /var/www/html/wordpress/wp-config.php
 sudo perl -pi -e "s%password_here%$database_password%g" /var/www/html/wordpress/wp-config.php
 
-echo -e "\n=====================\nWordpress is successfully installed\n- http://host//wordpress\n- DB_NAME: wordpress\n- DB_USER: wp_user\n- DB_PASSWORD: $database_password\n=====================\n"
+echo -e "\n=====================\n✔ Wordpress is successfully installed\n- http://host/wordpress\n- DB_NAME: wordpress\n- DB_USER: wp_user\n- DB_PASSWORD: $database_password\n=====================\n"

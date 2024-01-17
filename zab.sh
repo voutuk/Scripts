@@ -1,7 +1,7 @@
 #!/bin/bash
 
 handle_error() {
-    echo -e "\e[30m\e[41m ✘ An error occurred during execution. \e[0m"
+    echo -e "\e[30m\e[41m ✘ An error occurred during execution at line $BASH_LINENO. \e[0m"
     exit 1
 }
 trap 'handle_error' ERR
@@ -9,13 +9,13 @@ trap 'handle_error' ERR
 echo -e "\e[30;44m ❍ Downloading and installing the Zabbix package. \e[0m"
 ubuntu_version=$(lsb_release -rs)
 wget https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu${ubuntu_version}_all.deb
-sudo dpkg -i zabbix-release_6.4-1+ubuntu${ubuntu_version}_all.deb
+sudo dpkg -i "zabbix-release_6.4-1+ubuntu${ubuntu_version}_all.deb"
 rm zabbix-release_6.4-1+ubuntu${ubuntu_version}_all.deb
 echo -e "\e[42m\e[30m ✔ Zabbix package. \e[0m"
 
 echo -e "\e[30;44m ❍ Installing Zabbix components. \e[0m"
 sudo apt update
-sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server dialog pv -y
+sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server pv -y
 echo -e "\e[42m\e[30m ✔ Zabbix components. \e[0m"
 
 if mysql -uroot -e "use zabbix" > /dev/null 2>&1; then

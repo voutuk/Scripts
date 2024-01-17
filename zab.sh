@@ -15,7 +15,7 @@ echo -e "\e[42m\e[30m ✔ Installing the Zabbix package. \e[0m"
 
 echo -e "\e[30;44m ❍ Installing Zabbix components. \e[0m"
 sudo apt update
-sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server pv -y
+sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server dialog pv -y
 echo -e "\e[42m\e[30m ✔ Zabbix components \e[0m"
 
 if mysql -uroot -e "use zabbix" > /dev/null 2>&1; then
@@ -51,4 +51,4 @@ echo -e "\e[30;44m ❍ Starting services. \e[0m"
 sudo systemctl restart zabbix-server zabbix-agent apache2
 sudo systemctl enable zabbix-server zabbix-agent apache2
 
-echo -e "\n=====================\nhttp://host/zabbix\nDB_NAME: zabbix\nDB_USER: zabbix\nDB_PASSWORD: $pass\nAdmin/zabbix\n=====================\n"
+echo -e "\n=====================\nZabbix is successfully installed\n- http://host/zabbix\n- DB_NAME: zabbix\n- DB_USER: zabbix\n- Password in the file /etc/zabbix/zabbix_server.conf\n- Admin/zabbix\n=====================\n"

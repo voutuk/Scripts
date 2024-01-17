@@ -11,19 +11,19 @@ ubuntu_version=$(lsb_release -rs)
 wget https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu${ubuntu_version}_all.deb
 sudo dpkg -i zabbix-release_6.4-1+ubuntu${ubuntu_version}_all.deb
 rm zabbix-release_6.4-1+ubuntu${ubuntu_version}_all.deb
-echo -e "\e[42m\e[30m ✔ Installing the Zabbix package. \e[0m"
+echo -e "\e[42m\e[30m ✔ Zabbix package. \e[0m"
 
 echo -e "\e[30;44m ❍ Installing Zabbix components. \e[0m"
 sudo apt update
 sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent mysql-server dialog pv -y
-echo -e "\e[42m\e[30m ✔ Zabbix components \e[0m"
+echo -e "\e[42m\e[30m ✔ Zabbix components. \e[0m"
 
 if mysql -uroot -e "use zabbix" > /dev/null 2>&1; then
-    echo -e "\e[30;44m ❍ Deleting an existing Zabbix database. \e[0m"
+    echo -e "\e[48;5;250m\e[30m ✎ Deleting an existing Zabbix database. \e[0m"
     sudo mysql -uroot -e "DROP DATABASE IF EXISTS zabbix;"
 fi
 if  mysql -uroot -e "use mysql; select user from user where user='zabbix'" | grep zabbix > /dev/null 2>&1; then
-    echo -e "\e[30;44m ❍ Deleting an existing Zabbix user. \e[0m"
+    echo -e "\e[48;5;250m\e[30m ✎ Deleting an existing Zabbix user. \e[0m"
     sudo mysql -uroot -e "DROP USER IF EXISTS 'zabbix'@'localhost';"
 fi
 echo -e "\e[30;44m ❍ Creating the Zabbix database. \e[0m"
@@ -44,10 +44,10 @@ mysql -uroot <<EOF
 set global log_bin_trust_function_creators = 0;
 EOF
 
-echo -e "\e[30;44m ❍ Writing the password to the configuration file. \e[0m"
+echo -e "\e[48;5;250m\e[30m ✎ Writing the password to the configuration file. \e[0m"
 echo "DBPassword=$pass" | sudo tee -a /etc/zabbix/zabbix_server.conf > /dev/null
 
-echo -e "\e[30;44m ❍ Starting services. \e[0m"
+echo -e "\e[48;5;183m\e[30m ✶ Starting services. \e[0m"
 sudo systemctl restart zabbix-server zabbix-agent apache2
 sudo systemctl enable zabbix-server zabbix-agent apache2
 

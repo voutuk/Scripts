@@ -35,3 +35,9 @@ Swap AWS 2GB
 ```bash
 wget -qO- https://raw.githubusercontent.com/voutuk/file/main/swap.sh | sudo bash
 ```
+
+AGARIO
+
+```bash
+wget -qO- https://raw.githubusercontent.com/voutuk/file/main/agario.sh | sudo bash
+```

@@ -11,4 +11,6 @@ sudo git clone https://github.com/Faris90/Ogar3.git
 sudo npm install ./Ogar3
 cd Ogar3
 sudo npm start
+cd Ogar3
+sudo npm start
 

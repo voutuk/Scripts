@@ -9,7 +9,6 @@ sudo apt-get update && sudo apt-get install nodejs -y
 sudo git clone https://github.com/Faris90/Ogar3.git
 
 sudo npm install
-sudo npm start
-
+sudo node index.js
 
 

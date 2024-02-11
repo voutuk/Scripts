@@ -14,4 +14,6 @@ cd Ogar3
 sudo npm install
 
 # Start the application directly with Node.js
+
+cd Ogar3
 sudo node index.js

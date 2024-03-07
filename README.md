@@ -1,5 +1,8 @@
 # Bash файли
 
+> [!CAUTION]
+> I am uncertain about the safety of these bash scripts.
+
 **Zabbix**
 
 ```bash

